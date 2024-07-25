@@ -1,0 +1,30 @@
+46C93E13-EE9B-4262-8488-563BCA757FEF
+        	notify_id: 20
+        	reserved: 00
+        	instance_count: 01
+        	flags: ACPI_WMI_EVENT(0x8)
+FA78E245-2C0F-4CA1-91CF-15F34E474850
+        	notify_id: 21
+        	reserved: 00
+        	instance_count: 01
+        	flags: ACPI_WMI_EVENT(0x8)
+1DCEAF0A-4D63-44BB-BD0C-0D6281BFDDC5
+        	notify_id: 22
+        	reserved: 00
+        	instance_count: 01
+        	flags: ACPI_WMI_EVENT(0x8)
+3F9E3C26-B077-4F86-91F5-37FF64D8C7ED
+        	notify_id: 23
+        	reserved: 00
+        	instance_count: 01
+        	flags: ACPI_WMI_EVENT(0x8)
+B60BFB48-3E5B-49E4-A0E9-8CFFE1B3434B
+        	notify_id: 41
+        	reserved: 41
+        	instance_count: 01
+        	flags: ACPI_WMI_METHOD(0x2)
+05901221-D566-11D1-B2F0-00A0C9062910
+        	notify_id: 41
+        	reserved: 42
+        	instance_count: 01
+        	flags: 0x00

@@ -1,0 +1,10 @@
+1F13AB7F-6220-4210-8F8E-8BB5E71EE969
+        	notify_id: 54
+        	reserved: 45
+        	instance_count: 01
+        	flags: ACPI_WMI_METHOD(0x2)
+05901221-D566-11D1-B2F0-00A0C9062910
+        	notify_id: 43
+        	reserved: 43
+        	instance_count: 01
+        	flags: 0x00

@@ -1,0 +1,38 @@
+class WMIEvent : __ExtrinsicEvent {
+};
+
+[WMI, Dynamic, Provider("WmiProv"), Locale("MS\\0x40A"), Description("Root WMI HID_EVENT20"), guid("{46c93e13-ee9b-4262-8488-563bca757fef}")]
+class HID_EVENT20 : WmiEvent {
+  [key, read] String InstanceName;
+  [read] Boolean Active;
+  [WmiDataId(1), read, write, Description("Package Data")] uint8 EventDetail[8];
+};
+
+[WMI, Dynamic, Provider("WmiProv"), Locale("MS\\0x40A"), Description("Root WMI HID_EVENT21"), guid("{fa78e245-2c0f-4ca1-91cf-15f34e474850}")]
+class HID_EVENT21 : WmiEvent {
+  [key, read] String InstanceName;
+  [read] Boolean Active;
+  [WmiDataId(1), read, write, Description("Package Data")] uint8 EventDetail[8];
+};
+
+[WMI, Dynamic, Provider("WmiProv"), Locale("MS\\0x40A"), Description("Root WMI HID_EVENT22"), guid("{1dceaf0a-4d63-44bb-bd0c-0d6281bfddc5}")]
+class HID_EVENT22 : WmiEvent {
+  [key, read] String InstanceName;
+  [read] Boolean Active;
+  [WmiDataId(1), read, write, Description("Package Data")] uint8 EventDetail[8];
+};
+
+[WMI, Dynamic, Provider("WmiProv"), Locale("MS\\0x40A"), Description("Root WMI HID_EVENT23"), guid("{3f9e3c26-b077-4f86-91f5-37ff64d8c7ed}")]
+class HID_EVENT23 : WmiEvent {
+  [key, read] String InstanceName;
+  [read] Boolean Active;
+  [WmiDataId(1), read, write, Description("Package Data")] uint8 EventDetail[8];
+};
+
+[WMI, Dynamic, provider("WmiProv"), Locale("MS\\0x409"), Description("Class used to operate firmware interface"), guid("{b60bfb48-3e5b-49e4-a0e9-8cffe1b3434b}")]
+class MICommonInterface {
+  [key, read] String InstanceName;
+  [read] Boolean Active;
+
+  [WmiMethodId(1), Implemented, read, write, Description("Method used to support system functions.")] void MiInterface([in, Description("WMI Interface")] uint8 InData[32], [out] uint8 OutData[30], [out] uint16 Reserved);
+};

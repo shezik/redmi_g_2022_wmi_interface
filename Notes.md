@@ -59,23 +59,34 @@ HID_EVENT20 event has occurred. EventDetail: 1 23 0 0 0 0 0 0 Active: True Insta
 使用 Xiaomi G Command Center 切换电源模式时会出现两条相同的事件。
 
 ```plaintext
-基址=00007FF9F2650000 \
-模块=libxiaomigcommandcenter.dll \
-方=用户模块 \
-路径=C:\Program Files\MI\Xiaomi G Command Center\1.0.2.236\libXiaomiGCommandCenter.dll \
+基址=00007FF9F2650000
+模块=libxiaomigcommandcenter.dll
+方=用户模块
+路径=C:\Program Files\MI\Xiaomi G Command Center\1.0.2.236\libXiaomiGCommandCenter.dll
 状态=Unloaded
 
-地址=00007FF9F27EB802 \
-模块/标签/异常=libxiaomigcommandcenter.dll \
-状态=已启用 \
-反汇编=call libxiaomigcommandcenter.7FF9F27EAA00 \
-命中=86 \
+地址=00007FF9F27EB802
+模块/标签/异常=libxiaomigcommandcenter.dll
+状态=已启用
+反汇编=call libxiaomigcommandcenter.7FF9F27EAA00
+命中=86
 摘要=暂停条件([[rdx]+0x1] != 0xFA && [[rdx]+0x3] != 0x9)
 ```
 
 这个断点可以捕获有趣的参数，见下文。注意这个条件的编写有些草率。
 
-[rdx] 前三十二字节的 Hexdump 使用[这个 recipe](file:///D:/ReverseEngineering/CyberChef/CyberChef_v10.5.2.html#recipe=From_Hexdump()To_Hex('0x%20with%20comma',0)To_Upper_case('All')Find_/_Replace(%7B'option':'Regex','string':','%7D,',%20',true,false,true,false)Find_/_Replace(%7B'option':'Regex','string':'X'%7D,'x',true,false,true,false)Find_/_Replace(%7B'option':'Regex','string':'%5E'%7D,'$inParams%5B%22InData%22%5D%20%3D%20%5Bbyte%5B%5D%5D(',true,false,true,false)Find_/_Replace(%7B'option':'Regex','string':'$'%7D,')%20%20%23%20',true,false,true,false)&input=MDAwMDAyMzhFREYyRTU1MCAgMDAgRkIgMDAgMEEgMDIgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIC77Li4uLi4uLi4uLi4uLi4gIA0KMDAwMDAyMzhFREYyRTU2MCAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgIC4uLi4uLi4uLi4uLi4uLi4gIA0K&ieol=%0D%0A) 解码。
+[rdx] 前三十二字节的 Hexdump 使用
+<details>
+<summary>这个 recipe</summary>
+From_Hexdump()<br>
+To_Hex('0x with comma',0)<br>
+To_Upper_case('All')<br>
+Find_/_Replace({'option':'Regex','string':','},', ',true,false,true,false)<br>
+Find_/_Replace({'option':'Regex','string':'X'},'x',true,false,true,false)<br>
+Find_/_Replace({'option':'Regex','string':'^'},'$inParams["InData"] = [byte[]](',true,false,true,false)<br>
+Find_/_Replace({'option':'Regex','string':'$'},')  # ',true,false,true,false)
+</details>
+解码。
 
 ```pwsh
 # Define the WMI class with attributes

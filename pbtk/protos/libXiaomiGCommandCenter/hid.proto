@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+message HidDeviceInfo {
+    string device_id = 1;
+    int32 vid = 2;
+    int32 pid = 3;
+    int32 usagepage = 4;
+    int32 usage = 5;
+    string device_index = 6;
+}
+
+message HidRequest {
+    string device_id = 1;
+    
+    RequestType type = 2;
+    enum RequestType {
+        READ = 0;
+        WRITE = 1;
+    }
+    
+    bytes data = 3;
+}
+
+enum HidStatus {
+    SUCCESS = 0;
+    ENUM_DEVICE_ERROR = 1;
+    NOT_FIND_TARGET_DEVICE = 2;
+    OPEN_DEVICE_ERROR = 3;
+    OPERATE_DEVICE_FAILED = 4;
+    OPERATE_DEVICE_TIMEOUT = 5;
+    OTHER_ERROR = 6;
+}

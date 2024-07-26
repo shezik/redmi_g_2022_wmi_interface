@@ -32,31 +32,30 @@ Microsoft (R) Windows Script Host Version 5.812
 Copyright (C) Microsoft Corporation. All rights reserved.
 
 Waiting for events ...
-HID_EVENT20 event has occurred. EventDetail: 1 22 2 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+K 切换至静谧模式
-HID_EVENT20 event has occurred. EventDetail: 1 22 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+K 切换至平衡模式
-HID_EVENT20 event has occurred. EventDetail: 1 22 3 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+K 切换至性能模式
-HID_EVENT20 event has occurred. EventDetail: 1 7 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Fn+Esc Fn Lock 关
-HID_EVENT20 event has occurred. EventDetail: 1 7 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Fn+Esc Fn Lock 开
-HID_EVENT20 event has occurred. EventDetail: 1 1 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Fn+F6 投射
-HID_EVENT20 event has occurred. EventDetail: 1 24 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F7 按下小爱同学键
-HID_EVENT20 event has occurred. EventDetail: 1 25 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F7 松开小爱同学键
-HID_EVENT20 event has occurred. EventDetail: 1 10 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F8 Xiaomi G Command Center
-HID_EVENT20 event has occurred. EventDetail: 1 27 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F9 系统设置键
-HID_EVENT20 event has occurred. EventDetail: 1 5 5 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Fn+F10 低键盘背光
-HID_EVENT20 event has occurred. EventDetail: 1 5 10 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F10 高键盘背光
-HID_EVENT20 event has occurred. EventDetail: 1 5 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Fn+F10 无键盘背光
-HID_EVENT20 event has occurred. EventDetail: 1 26 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+S 切换刷新率
-HID_EVENT20 event has occurred. EventDetail: 1 26 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+S 切换刷新率
-HID_EVENT20 event has occurred. EventDetail: 1 9 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Caps 打开大写锁定
-HID_EVENT20 event has occurred. EventDetail: 1 9 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Caps 关闭大写锁定
-HID_EVENT20 event has occurred. EventDetail: 1 13 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    NumLk 关闭数字锁定
-HID_EVENT20 event has occurred. EventDetail: 1 13 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    NumLk 打开数字锁定
-HID_EVENT20 event has occurred. EventDetail: 1 6 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Xiaomi G Command Center 禁用触控板
-HID_EVENT20 event has occurred. EventDetail: 1 6 1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0     Xiaomi G Command Center 启用触控板
-HID_EVENT20 event has occurred. EventDetail: 1 23 0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    禁用 Windows 键时按下产生的事件
+HID_EVENT20 event has occurred. EventDetail: 1 22  2 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+K 切换至静谧模式
+HID_EVENT20 event has occurred. EventDetail: 1 22  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+K 切换至平衡模式
+HID_EVENT20 event has occurred. EventDetail: 1 22  3 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+K 切换至性能模式
+HID_EVENT20 event has occurred. EventDetail: 1  7  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+Esc Fn Lock 关
+HID_EVENT20 event has occurred. EventDetail: 1  7  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+Esc Fn Lock 开
+HID_EVENT20 event has occurred. EventDetail: 1  1  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F6  投射
+HID_EVENT20 event has occurred. EventDetail: 1 24  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F7  按下小爱同学键
+HID_EVENT20 event has occurred. EventDetail: 1 25  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F7  松开小爱同学键
+HID_EVENT20 event has occurred. EventDetail: 1 10  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F8  Xiaomi G Command Center
+HID_EVENT20 event has occurred. EventDetail: 1 27  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F9  系统设置
+HID_EVENT20 event has occurred. EventDetail: 1  5  5 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F10 低键盘背光
+HID_EVENT20 event has occurred. EventDetail: 1  5 10 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F10 高键盘背光
+HID_EVENT20 event has occurred. EventDetail: 1  5  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+F10 无键盘背光
+HID_EVENT20 event has occurred. EventDetail: 1 26  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Fn+S 切换刷新率
+HID_EVENT20 event has occurred. EventDetail: 1  9  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Caps 打开大写锁定
+HID_EVENT20 event has occurred. EventDetail: 1  9  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Caps 关闭大写锁定
+HID_EVENT20 event has occurred. EventDetail: 1 13  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    NumLk 关闭数字锁定
+HID_EVENT20 event has occurred. EventDetail: 1 13  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    NumLk 打开数字锁定
+HID_EVENT20 event has occurred. EventDetail: 1  6  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Xiaomi G Command Center 禁用触控板
+HID_EVENT20 event has occurred. EventDetail: 1  6  1 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    Xiaomi G Command Center 启用触控板
+HID_EVENT20 event has occurred. EventDetail: 1 23  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    禁用 Windows 键时按下产生的事件
 ```
 
-使用 Xiaomi G Command Center 切换电源模式时会出现两条相同的事件。
+使用 Xiaomi G Command Center 切换电源模式时会出现两条相同的事件。事实上使用 WMI 调用 MiInterface 方法切换电源模式就是会出现两条相同的事件，
 
 ```plaintext
 基址=00007FF9F2650000

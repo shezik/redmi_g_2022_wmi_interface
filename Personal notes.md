@@ -55,6 +55,7 @@ HID_EVENT20 event has occurred. EventDetail: 1  6  1 0 0 0 0 0 Active: True Inst
 HID_EVENT20 event has occurred. EventDetail: 1 23  0 0 0 0 0 0 Active: True InstanceName: ACPI\PNP0C14\MIFS_0    禁用 Windows 键时按下产生的事件
 ```
 
+以上仅使用前三个字节。\
 使用 Xiaomi G Command Center 切换电源模式时会出现两条相同的事件。事实上使用 WMI 调用 MiInterface 方法切换电源模式就是会出现两条相同的事件，
 
 ```plaintext
@@ -74,9 +75,9 @@ HID_EVENT20 event has occurred. EventDetail: 1 23  0 0 0 0 0 0 Active: True Inst
 
 这个断点可以捕获有趣的参数，见下文。注意这个条件的编写有些草率。
 
-[rdx] 前三十二字节的 Hexdump 使用
+`[rdx]` 前32字节的 Hexdump 使用
 <details>
-<summary>这个 recipe</summary>
+<summary>这个 CyberChef Recipe</summary>
 From_Hexdump()<br>
 To_Hex('0x with comma',0)<br>
 To_Upper_case('All')<br>
@@ -85,7 +86,7 @@ Find_/_Replace({'option':'Regex','string':'X'},'x',true,false,true,false)<br>
 Find_/_Replace({'option':'Regex','string':'^'},'$inParams["InData"] = [byte[]](',true,false,true,false)<br>
 Find_/_Replace({'option':'Regex','string':'$'},')  # ',true,false,true,false)
 </details>
-解码。
+来快速转换格式。
 
 ```pwsh
 # Define the WMI class with attributes
@@ -124,12 +125,33 @@ $inParams["InData"] = [byte[]](0x00, 0xFB, 0x00, 0x0B, 0x00, 0x00, 0x00, 0x00, 0
 $result = $miClass.psbase.InvokeMethod("MiInterface", $inParams, $null)
 
 # Process the output
-$result
-
-# uint8_t result_success[30] = [0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+$result.OutData
 ```
 
 ```plaintext
+TODO:
 调试字符串： "[0726/011829.254:INFO:CONSOLE(2)] "client log:js request get_gpu_status success", source: file:///C:/Program%20Files/MI/Xiaomi%20G%20Command%20Center/1.0.2.236/dist/static/js/main.js (2)" \
 调试字符串： "[0726/011829.852:INFO:CONSOLE(2)] "client log:js request get_graphic_mode_need_reboot success", source: file:///C:/Program%20Files/MI/Xiaomi%20G%20Command%20Center/1.0.2.236/dist/static/js/main.js (2)"
 ```
+
+产生 `HID_EVENT20` 事件的 DSDT ASL 代码形如下面所示。
+```asl
+Method (_Q16, 0, NotSerialized)  // _Qxx: EC Query, xx=0x00-0xFF
+{
+    If ((ECRD (RefOf (CALK)) == One))
+    {
+        ^^^WMID.EVBU [Zero] = One
+        ^^^WMID.EVBU [One] = 0x09
+        ^^^WMID.EVBU [0x02] = One
+        Notify (WMID, 0x20) // Reserved
+    }
+    Else
+    {
+        ^^^WMID.EVBU [Zero] = One
+        ^^^WMID.EVBU [One] = 0x09
+        ^^^WMID.EVBU [0x02] = Zero
+        Notify (WMID, 0x20) // Reserved
+    }
+}
+```
+结合相关 _WDG 和 MOF 文件可知，名为 `HID_EVENT20` 的 WMI 事件是 WMID 设备下 `notify_id` 为 0x20 的 ACPI 事件。

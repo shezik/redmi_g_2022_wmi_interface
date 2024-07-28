@@ -27,6 +27,8 @@ Do While(True)
 Loop
 ```
 
+注：以上代码以十进制输出 EventDetail。
+
 ```plaintext
 Microsoft (R) Windows Script Host Version 5.812
 Copyright (C) Microsoft Corporation. All rights reserved.
@@ -56,7 +58,7 @@ HID_EVENT20 event has occurred. EventDetail: 1 23  0 0 0 0 0 0 Active: True Inst
 ```
 
 以上仅使用前三个字节。\
-使用 Xiaomi G Command Center 切换电源模式时会出现两条相同的事件。事实上使用 WMI 调用 MiInterface 方法切换电源模式就是会出现两条相同的事件，
+使用 Xiaomi G Command Center 切换电源模式时会出现两条相同的事件。事实上使用 WMI 调用 MiInterface 方法切换电源模式就是会出现两条相同的事件，~~因为 WMAA 调用了 THMD 方法~~ 不调用 THMD 方法是不会有 WMI 事件的。目前不知道为什么。
 
 ```plaintext
 基址=00007FF9F2650000

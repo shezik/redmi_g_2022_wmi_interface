@@ -1,5 +1,6 @@
 // Try C# syntax highlighting on this document (and other ASL files), it looks good (don't turn on Intellisense tho)
 
+// All available power supply ratings
 Name (PWL1, 0x41)    // 65W
 Name (PWL2, 0x5A)    // 90W
 Name (PWL3, 0x5F)    // 95W
@@ -20,10 +21,10 @@ Name (PWL7, 0x014A)  // 330W
     0x0B (00001011): Just plugged in -> 0x03 or 0x07
 
     0x83 (10000011): Powered by Thunderbolt and NOT charging
-    0x8* (1000....): Same thing applies.
+    0x8* (1000....): Same things apply.
 
     Bit masks:
-    00000001: Power supply connected (BOTH DC barrel jack AND Thunderbolt counts)
+    00000001: Plugged in (BOTH DC barrel jack AND Thunderbolt counts)
     00000010: what
     00000100: Battery charging
     00001000: Powered by (i.e. draining) battery
@@ -35,17 +36,17 @@ Method (APTY, 0, Serialized)
 {
     If (((ECWR & One) == One))
     {
-        Local7 = One  // Powered by DC barrel jack
+        Local7 = One  // Plugged in
     }
 
     If (((ECWR & One) == Zero))
     {
-        Local7 = 0x02  // Not charging
+        Local7 = 0x02  // Not plugged in
     }
 
     If (((ECWR & 0x83) == 0x83))
     {
-        Local7 = 0x03  // Powered by Thunderbolt
+        Local7 = 0x03  // Powered by Thunderbolt (Note that this is bitwise AND)
     }
 
     Return (Local7)
@@ -56,100 +57,105 @@ Method (THMD, 0, Serialized)
 {
     If (((ECWR & One) == One))
     {
-        Local7 = One
+        Local7 = One  // Plugged in
     }
     If (((ECWR & One) == Zero))
     {
-        Local7 = 0x02
+        Local7 = 0x02  // Not plugged in
     }
     If (((ECWR & 0x80) == 0x80))
     {
-        Local7 = 0x03
+        Local7 = 0x03  // Powered by Thunderbolt
     }
-    If (((Local7 == One) || (APTY () == 0x03)))
+    If (((Local7 == One) || (APTY () == 0x03)))  // Plugged in OR powered by Thunderbolt (Why?)
     {
         Local0 = (ECRD (RefOf (AWHG)) << 0x08)
-        Local0 += ECRD (RefOf (AWLW))
-        If ((Local0 < PWL5))
+        Local0 += ECRD (RefOf (AWLW))  // Local0: Power supply rating
+        If ((Local0 < PWL5))  // Power supply rating < 180W
         {
-            If ((Local0 < PWL1)){}
+            If ((Local0 < PWL1)){}  // Power supply rating < 65W, don't set ODV0 (so what?)
             Else
             {
-                ODV0 = 0x02
+                ODV0 = 0x02  // 65W <= Power supply rating < 180W
             }
-            ODV5 = 0x02
+            ODV5 = 0x02  // This is only for running on a not-so-beefy power supply (< 180W). Not even used for batteries.
             ^^^WMID.EVBU [Zero] = One
             ^^^WMID.EVBU [One] = 0x16
             ^^^WMID.EVBU [0x02] = 0x02
-            Notify (WMID, 0x20) // Reserved
+            Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x02 0x00 0x00 0x00 0x00 0x00
         }
-        ElseIf ((Local0 >= PWL5))
+        ElseIf ((Local0 >= PWL5))  // Power supply rating >= 180W
         {
-            If ((ECRD (RefOf (ITSM)) == Zero))
+            If ((ECRD (RefOf (ITSM)) == Zero))  // TURBO mode
             {
                 ODV0 = Zero
                 ^^^WMID.EVBU [Zero] = One
                 ^^^WMID.EVBU [One] = 0x16
                 ^^^WMID.EVBU [0x02] = 0x03
-                Notify (WMID, 0x20) // Reserved
+                Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x03 0x00 0x00 0x00 0x00 0x00
             }
-            ElseIf ((ECRD (RefOf (ITSM)) == One))
+            ElseIf ((ECRD (RefOf (ITSM)) == One))  // BALANCED mode
             {
                 ODV0 = One
                 ^^^WMID.EVBU [Zero] = One
                 ^^^WMID.EVBU [One] = 0x16
                 ^^^WMID.EVBU [0x02] = One
-                Notify (WMID, 0x20) // Reserved
+                Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x01 0x00 0x00 0x00 0x00 0x00
             }
-            ElseIf ((ECRD (RefOf (ITSM)) == 0x02))
+            ElseIf ((ECRD (RefOf (ITSM)) == 0x02))  // SILENCE mode
             {
                 ODV0 = 0x02
                 ^^^WMID.EVBU [Zero] = One
                 ^^^WMID.EVBU [One] = 0x16
                 ^^^WMID.EVBU [0x02] = 0x02
-                Notify (WMID, 0x20) // Reserved
+                Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x02 0x00 0x00 0x00 0x00 0x00
             }
-            ElseIf ((ECRD (RefOf (ITSM)) == 0x03))
+            ElseIf ((ECRD (RefOf (ITSM)) == 0x03))  // My laptop didn't come with this power mode so...
             {
                 ODV0 = 0x03
                 ^^^WMID.EVBU [Zero] = One
                 ^^^WMID.EVBU [One] = 0x16
                 ^^^WMID.EVBU [0x02] = 0x04
-                Notify (WMID, 0x20) // Reserved
+                Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x04 0x00 0x00 0x00 0x00 0x00
             }
         }
     }
-    ElseIf ((ECRD (RefOf (ITSM)) == 0x02))
+    // Not plugged in
+    ElseIf ((ECRD (RefOf (ITSM)) == 0x02))  // SILENCE mode
     {
         ODV0 = 0x02
-        If ((GSTS == Zero)){}
+        If ((GSTS == Zero)){}  // How useless
         Else
         {
         }
         ^^^WMID.EVBU [Zero] = One
         ^^^WMID.EVBU [One] = 0x16
         ^^^WMID.EVBU [0x02] = 0x02
-        Notify (WMID, 0x20) // Reserved
+        Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x02 0x00 0x00 0x00 0x00 0x00
     }
+    // The other power mode when not plugged in is BALANCED mode.
     Else
     {
         ODV0 = One
-        If ((GSTS == Zero)){}
+        If ((GSTS == Zero)){}  // Why??
         Else
         {
         }
         ^^^WMID.EVBU [Zero] = One
         ^^^WMID.EVBU [One] = 0x16
         ^^^WMID.EVBU [0x02] = One
-        Notify (WMID, 0x20) // Reserved
+        Notify (WMID, 0x20)  // HID_EVENT20, 0x01 0x16 0x01 0x00 0x00 0x00 0x00 0x00
     }
+    // I suppose we shouldn't care since no specialized Xiaomi drivers are loaded on Windows to handle these events,
+    // and WMI doesn't expose them, either.
     Notify (IETM, 0x88) // Device-Specific
     Notify (NPCF, 0xC0) // Hardware-Specific
-    FNKF = One
+    FNKF = One  // What?
 }
 
 // --------------------------------------------------------------------------------------------------------------------------------
 
+// Snippet from WMAA to set power mode via WMI
 Local0 = (\_SB.PC00.LPCB.H_EC.ECRD (RefOf (\_SB.PC00.LPCB.H_EC.AWHG)) << 0x08)
 Local0 += \_SB.PC00.LPCB.H_EC.ECRD (RefOf (\_SB.PC00.LPCB.H_EC.AWLW))
 Local1 = \_SB.PC00.LPCB.H_EC.APTY ()
@@ -158,7 +164,7 @@ If (((GPUT == One) || (GPUT == 0x03)))  // GPU Type? Because obviously these two
 {
     If (((Local1 == 0x03) || (Local1 == One)))  // Plugged in
     {
-        If ((Local0 < PWL6))  // Input power limit < 230W
+        If ((Local0 < PWL6))  // Power supply rating < 230W
         {
             // No modes other than Silent for you
             If ((FUN3 == 0x02))
@@ -170,9 +176,9 @@ If (((GPUT == One) || (GPUT == 0x03)))  // GPU Type? Because obviously these two
                 SGER = 0xE000
             }
         }
-        ElseIf ((Local0 >= PWL6))  // Input power limit >= 230W
+        ElseIf ((Local0 >= PWL6))  // Power supply rating >= 230W
         {
-            If ((Local0 < PWL7))  // Input power limit == 230W
+            If ((Local0 < PWL7))  // Power supply rating == 230W
             {
                 // No 0x04 for you
                 If ((FUN3 == 0x04))
@@ -189,7 +195,7 @@ If (((GPUT == One) || (GPUT == 0x03)))  // GPU Type? Because obviously these two
                     \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
                 }
             }
-            ElseIf ((Local0 >= PWL7))  // Input power limit == 330W
+            ElseIf ((Local0 >= PWL7))  // Power supply rating == 330W
             {
                 // 0x03 is the equivalent of 0x00
                 If ((FUN3 == 0x03))
@@ -219,7 +225,7 @@ If (((GPUT == One) || (GPUT == 0x03)))  // GPU Type? Because obviously these two
 }
 ElseIf (((Local1 == 0x03) || (Local1 == One)))  // Plugged in
 {
-    If ((Local0 <= PWL4))  // Input power limit <= 100W
+    If ((Local0 <= PWL4))  // Power supply rating <= 100W
     {
         // No modes other than Silent for you
         \_SB.PC00.LPCB.H_EC.ECWT (0x02, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
@@ -228,7 +234,7 @@ ElseIf (((Local1 == 0x03) || (Local1 == One)))  // Plugged in
             SGER = 0xE000
         }
     }
-    ElseIf ((Local0 > PWL4))  // Input power limit > 100W
+    ElseIf ((Local0 > PWL4))  // Power supply rating > 100W
     {
         // 0x03 is the equivalent of 0x00
         If ((FUN3 == 0x03))
@@ -249,5 +255,5 @@ Else
 {
     \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
 }
-\_SB.PC00.LPCB.H_EC.THMD ()
+\_SB.PC00.LPCB.H_EC.THMD ()  // Set actual power parameters according to ITSM
 Break

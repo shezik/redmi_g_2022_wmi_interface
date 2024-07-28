@@ -1,0 +1,253 @@
+// Try C# syntax highlighting on this document (and other ASL files), it looks good (don't turn on Intellisense tho)
+
+Name (PWL1, 0x41)    // 65W
+Name (PWL2, 0x5A)    // 90W
+Name (PWL3, 0x5F)    // 95W
+Name (PWL4, 0x64)    // 100W
+Name (PWL5, 0xB4)    // 180W
+Name (PWL6, 0xE6)    // 230W
+Name (PWL7, 0x014A)  // 330W
+
+/*
+    ECWR (EC memory 0x60)
+
+    Values:
+    0x02 (00000010): Just unplugged (wasn't charging) -> 0x0A
+    0x03 (00000011): Plugged in and NOT charging
+    0x06 (00000110): Just unplugged (was charging) -> 0x0A
+    0x07 (00000111): Plugged in and charging
+    0x0A (00001010): Normal unplugged usage
+    0x0B (00001011): Just plugged in -> 0x03 or 0x07
+
+    0x83 (10000011): Powered by Thunderbolt and NOT charging
+    0x8* (1000....): Same thing applies.
+
+    Bit masks:
+    00000001: Power supply connected (BOTH DC barrel jack AND Thunderbolt counts)
+    00000010: what
+    00000100: Battery charging
+    00001000: Powered by (i.e. draining) battery
+    10000000: Powered by Thunderbolt
+              This bit appears with 00000001 so change the most significant 4 bits in the Values part to 1000 (8) and the explanations still work.
+*/
+
+Method (APTY, 0, Serialized)
+{
+    If (((ECWR & One) == One))
+    {
+        Local7 = One  // Powered by DC barrel jack
+    }
+
+    If (((ECWR & One) == Zero))
+    {
+        Local7 = 0x02  // Not charging
+    }
+
+    If (((ECWR & 0x83) == 0x83))
+    {
+        Local7 = 0x03  // Powered by Thunderbolt
+    }
+
+    Return (Local7)
+}
+
+// TODO: Analyze this method!
+Method (THMD, 0, Serialized)
+{
+    If (((ECWR & One) == One))
+    {
+        Local7 = One
+    }
+    If (((ECWR & One) == Zero))
+    {
+        Local7 = 0x02
+    }
+    If (((ECWR & 0x80) == 0x80))
+    {
+        Local7 = 0x03
+    }
+    If (((Local7 == One) || (APTY () == 0x03)))
+    {
+        Local0 = (ECRD (RefOf (AWHG)) << 0x08)
+        Local0 += ECRD (RefOf (AWLW))
+        If ((Local0 < PWL5))
+        {
+            If ((Local0 < PWL1)){}
+            Else
+            {
+                ODV0 = 0x02
+            }
+            ODV5 = 0x02
+            ^^^WMID.EVBU [Zero] = One
+            ^^^WMID.EVBU [One] = 0x16
+            ^^^WMID.EVBU [0x02] = 0x02
+            Notify (WMID, 0x20) // Reserved
+        }
+        ElseIf ((Local0 >= PWL5))
+        {
+            If ((ECRD (RefOf (ITSM)) == Zero))
+            {
+                ODV0 = Zero
+                ^^^WMID.EVBU [Zero] = One
+                ^^^WMID.EVBU [One] = 0x16
+                ^^^WMID.EVBU [0x02] = 0x03
+                Notify (WMID, 0x20) // Reserved
+            }
+            ElseIf ((ECRD (RefOf (ITSM)) == One))
+            {
+                ODV0 = One
+                ^^^WMID.EVBU [Zero] = One
+                ^^^WMID.EVBU [One] = 0x16
+                ^^^WMID.EVBU [0x02] = One
+                Notify (WMID, 0x20) // Reserved
+            }
+            ElseIf ((ECRD (RefOf (ITSM)) == 0x02))
+            {
+                ODV0 = 0x02
+                ^^^WMID.EVBU [Zero] = One
+                ^^^WMID.EVBU [One] = 0x16
+                ^^^WMID.EVBU [0x02] = 0x02
+                Notify (WMID, 0x20) // Reserved
+            }
+            ElseIf ((ECRD (RefOf (ITSM)) == 0x03))
+            {
+                ODV0 = 0x03
+                ^^^WMID.EVBU [Zero] = One
+                ^^^WMID.EVBU [One] = 0x16
+                ^^^WMID.EVBU [0x02] = 0x04
+                Notify (WMID, 0x20) // Reserved
+            }
+        }
+    }
+    ElseIf ((ECRD (RefOf (ITSM)) == 0x02))
+    {
+        ODV0 = 0x02
+        If ((GSTS == Zero)){}
+        Else
+        {
+        }
+        ^^^WMID.EVBU [Zero] = One
+        ^^^WMID.EVBU [One] = 0x16
+        ^^^WMID.EVBU [0x02] = 0x02
+        Notify (WMID, 0x20) // Reserved
+    }
+    Else
+    {
+        ODV0 = One
+        If ((GSTS == Zero)){}
+        Else
+        {
+        }
+        ^^^WMID.EVBU [Zero] = One
+        ^^^WMID.EVBU [One] = 0x16
+        ^^^WMID.EVBU [0x02] = One
+        Notify (WMID, 0x20) // Reserved
+    }
+    Notify (IETM, 0x88) // Device-Specific
+    Notify (NPCF, 0xC0) // Hardware-Specific
+    FNKF = One
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------
+
+Local0 = (\_SB.PC00.LPCB.H_EC.ECRD (RefOf (\_SB.PC00.LPCB.H_EC.AWHG)) << 0x08)
+Local0 += \_SB.PC00.LPCB.H_EC.ECRD (RefOf (\_SB.PC00.LPCB.H_EC.AWLW))
+Local1 = \_SB.PC00.LPCB.H_EC.APTY ()
+SGER = 0x8000
+If (((GPUT == One) || (GPUT == 0x03)))  // GPU Type? Because obviously these two types consume much more power. This crap first occurs in SSDT12: `CreateBitField (Arg3, 0x08, GPUT)` in `\_SB.PC00.PEG1.PEGP.GPS` method.
+{
+    If (((Local1 == 0x03) || (Local1 == One)))  // Plugged in
+    {
+        If ((Local0 < PWL6))  // Input power limit < 230W
+        {
+            // No modes other than Silent for you
+            If ((FUN3 == 0x02))
+            {
+                \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+            }
+            Else
+            {
+                SGER = 0xE000
+            }
+        }
+        ElseIf ((Local0 >= PWL6))  // Input power limit >= 230W
+        {
+            If ((Local0 < PWL7))  // Input power limit == 230W
+            {
+                // No 0x04 for you
+                If ((FUN3 == 0x04))
+                {
+                    SGER = 0xE000
+                }
+                // 0x03 is the equivalent of 0x00
+                ElseIf ((FUN3 == 0x03))
+                {
+                    \_SB.PC00.LPCB.H_EC.ECWT (Zero, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+                }
+                Else
+                {
+                    \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+                }
+            }
+            ElseIf ((Local0 >= PWL7))  // Input power limit == 330W
+            {
+                // 0x03 is the equivalent of 0x00
+                If ((FUN3 == 0x03))
+                {
+                    \_SB.PC00.LPCB.H_EC.ECWT (Zero, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+                }
+                // 0x04 is the equivalent of 0x03 (what the fuck)
+                ElseIf ((FUN3 == 0x04))
+                {
+                    \_SB.PC00.LPCB.H_EC.ECWT (0x03, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+                }
+                Else
+                {
+                    \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+                }
+            }
+        }
+    }
+    // Not plugged in, 0x03 and 0x04 not available
+    ElseIf ((FUN3 == 0x03)){}
+    ElseIf ((FUN3 == 0x04)){}
+    // But 0x00 is still available...?
+    Else
+    {
+        \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+    }
+}
+ElseIf (((Local1 == 0x03) || (Local1 == One)))  // Plugged in
+{
+    If ((Local0 <= PWL4))  // Input power limit <= 100W
+    {
+        // No modes other than Silent for you
+        \_SB.PC00.LPCB.H_EC.ECWT (0x02, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+        If (((FUN3 == One) || (FUN3 == Zero)))
+        {
+            SGER = 0xE000
+        }
+    }
+    ElseIf ((Local0 > PWL4))  // Input power limit > 100W
+    {
+        // 0x03 is the equivalent of 0x00
+        If ((FUN3 == 0x03))
+        {
+            \_SB.PC00.LPCB.H_EC.ECWT (Zero, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+        }
+        Else
+        {
+            \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+        }
+    }
+}
+// Not plugged in, 0x03 not available
+ElseIf ((FUN3 == 0x03)){}
+// Dude 0x00 is available in this case, too! What?
+// Setting power mode to 0x00 when unplugged doesn't throw 0xE000 though, so I guess this makes sense now.
+Else
+{
+    \_SB.PC00.LPCB.H_EC.ECWT (FUN3, RefOf (\_SB.PC00.LPCB.H_EC.ITSM))
+}
+\_SB.PC00.LPCB.H_EC.THMD ()
+Break

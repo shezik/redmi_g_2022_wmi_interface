@@ -25,7 +25,7 @@ Name (PWL7, 0x014A)  // 330W
 
     Bit masks:
     00000001: Plugged in (BOTH DC barrel jack AND Thunderbolt counts)
-    00000010: what
+    00000010: Battery present (I removed the battery for this lol)
     00000100: Battery charging
     00001000: Powered by (i.e. draining) battery
     10000000: Powered by Thunderbolt
